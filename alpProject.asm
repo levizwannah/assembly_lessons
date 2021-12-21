@@ -1,6 +1,11 @@
 include emu8086.inc
 org 100h
 
+; GROUP MEMBERS ICS 3A
+; 123558 Zwannah, Levi Kamara
+; 116814 Ombaso, Tony Mogoa
+; 110195 Ooko, Emmanuel Odhiambo
+
 ; define normal levels L1, L2
 ; read the thermometer and display on LCD
 ; check if t < L1 and stop the motor
