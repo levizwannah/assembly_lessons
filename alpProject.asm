@@ -40,7 +40,8 @@ ja increaseAirCond;
 
 ;normal speed
 mov [05h], 00000010b; 
-print ' normal speed '
+print ' normal speed ' 
+call rotateNormalSpeed
 jmp finally;
 
 ;stop air cond
@@ -52,12 +53,11 @@ jmp finally;
 ;high speed
 increaseAirCond:
 mov [05], 00000100b; 
-print ' Increased speed '
+print ' Increased speed'
+call rotateHigherSpeed
 
 
 finally: 
-call setFanSpeed;
-call delay1Sec;
 jmp mainLoop;
 exit:
 
@@ -75,14 +75,7 @@ displayTemp proc
     mov ax, [04h]
     out 199, ax
     pop ax
-    ret
-    
-setFanSpeed proc
-    push ax;
-    mov ax, [05h]; [05h] contains the new fan speed
-    out 7, ax;
-    pop ax;
-    ret  
+    ret 
 
 delay1Sec proc
     push ax;
@@ -91,9 +84,56 @@ delay1Sec proc
     mov ah, 86h;
     int 15h;
     pop ax;            
+    ret 
+
+rotateHigherSpeed proc
+    mov ax, 0
+    call is_ready
+    mov ax, 1
+    out 7, ax
+    mov ax, 0
+    call is_ready
+    mov ax, 3
+    out 7, ax
+    mov ax, 0
+    call is_ready
+    mov ax, 6
+    out 7, ax
     ret
+
+rotateNormalSpeed proc
+    mov ax, 0
+    call is_ready  
+    call delay
+    mov ax, 1
+    out 7, ax
+    mov ax, 0
+    call is_ready
+    call delay
+    mov ax, 3
+    out 7, ax
+    mov ax, 0
+    call is_ready
+    call delay
+    mov ax, 6
+    out 7, ax
+    ret
+
+is_ready proc
+    wait:
+        in al, 7
+        test al, 10000000b
+        jz wait     
+    ret
+
+
+delay proc
+    ;delay by a 10th of a second
+    mov dx, 86a0h
+    mov cx, 1h 
+
+    mov ah, 86h
+    int 15h
+    ret 
+    
 ret
-
-
-
-
